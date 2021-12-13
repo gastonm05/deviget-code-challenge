@@ -1,4 +1,5 @@
 package api;
+
 import helpers.api.ApiHelper;
 import io.restassured.response.Response;
 import org.testng.Assert;
@@ -9,12 +10,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-
 public class NasaTest {
 	private final String apiUri = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos";
 	private final String api_key = "hYP0336a4td1U4dvEMkLHzAAf3FcNKwLdwCocabK";
 	private final HashMap<String, Object> queryParams = new HashMap<>();
-
 
 	@BeforeMethod()
 	public void beforeMethod() {
@@ -118,7 +117,6 @@ public class NasaTest {
 	public void validateCamerasPhotoAmounts() {
 
 		// Setup Request Headers
-		queryParams.clear();
 		queryParams.put("api_key", api_key);
 		queryParams.put("sol", "1000");
 
@@ -130,15 +128,17 @@ public class NasaTest {
 		List<String> cameras = new ArrayList<>(new HashSet<>(listCameras));
 
 		// Get the total number of photos taken
-		int totalPhotos = response.body().path("photos.size()");
+		List<String> allPhotos = response.jsonPath().getList("photos");
+		int totalPhotos = allPhotos.size();
 
 		// Compare number of photos taken by each camera
 		for (String camera : cameras) {
 
 			queryParams.put("camera", camera);
+			Response response2 = ApiHelper.get(apiUri, queryParams, "");
 
-			Response result2 = ApiHelper.get(apiUri, queryParams, "");
-			int photosCamera = result2.body().path("photos.size()");
+			List<String> photos = response2.jsonPath().getList("photos");
+			int photosCamera = photos.size();
 
 			Assert.assertTrue(photosCamera < (totalPhotos - photosCamera) * 10);
 		}
