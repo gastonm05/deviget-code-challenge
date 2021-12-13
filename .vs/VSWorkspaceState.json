@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\.settings",
+    "\\bin",
+    "\\src",
+    "\\src\\test",
+    "\\src\\test\\java"
+  ],
+  "SelectedNode": "\\.settings\\org.eclipse.jdt.core.prefs",
+  "PreviewInSolutionExplorer": false
+}
